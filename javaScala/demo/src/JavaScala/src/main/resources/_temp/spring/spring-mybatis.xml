@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--1, 配置数据库相关参数-->
+    <!--<context:property-placeholder location="classpath:mybatis/mybatis_config.properties" ignore-unresolvable="true"/>-->
+
+    <!-- 2,定义数据源 Bean，使用 C3P0数据源实现，并注入数据源的必要信息 -->
+    <!--p:jdbcUrl="jdbc:mysql://10.65.1.62:3306/mybatis"-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close"
+          p:driverClass="com.mysql.jdbc.Driver"
+          p:jdbcUrl="jdbc:mysql://localhost:3306/mybatis"
+          p:user="fishsey"
+          p:password="0114"
+          p:maxPoolSize="40"
+          p:minPoolSize="2"
+          p:initialPoolSize="2"
+          p:maxIdleTime="30"/>
+
+    <!--3、配置 SqlSessionFactory对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据库连接池-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--配置mybatis全局配置文件:mybatis-config.xml-->
+        <property name="configLocation" value="classpath:_temp/mybatis/mybatis-config.xml"/>
+        <!--扫描 entity包,使用别名,多个用;隔开-->
+        <property name="typeAliasesPackage" value="_temp._mybatis.entity"/>
+        <!--扫描 sql配置文件:mapper需要的xml文件-->
+        <property name="mapperLocations" value="classpath:_temp/mybatisMapper/*.xml"/>
+    </bean>
+
+
+    <!--4、配置扫描 Dao接口包,动态实现 DAO接口,注入到 spring容器-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入SqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!-- 给出需要扫描的 Dao接口-->
+        <property name="basePackage" value="_temp._mybatis.dao"/>
+    </bean>
+
+
+    <!--5、配置事务管理器 (mybatis采用的是 JDBC的事务管理器)-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--配置基于注解的声明式事务,默认使用注解来管理事务行为-->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+
+
+
+</beans>

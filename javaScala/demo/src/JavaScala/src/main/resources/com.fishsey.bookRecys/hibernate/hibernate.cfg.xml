@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- 指定数据库方言 -->
+        <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+        <!-- 根据需要自动创建数据表 -->
+        <property name="hbm2ddl.auto">update</property>
+        <!--<property name="hbm2ddl.auto">validate</property>-->
+
+        <!-- 显示 Hibernate持久化操作所生成的 SQL -->
+        <!-- 将 SQL脚本进行格式化后再输出 -->
+        <property name="show_sql">false</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+
+        <property name="jdbc.batch_size">100</property>
+
+        <!--<property name="current_session_context_class">thread</property>-->
+        <!--<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>-->
+
+    </session-factory>
+</hibernate-configuration>

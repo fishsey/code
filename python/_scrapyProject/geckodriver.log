@@ -1,0 +1,35 @@
+1498143318476	geckodriver	INFO	Listening on 127.0.0.1:49929
+1498143319478	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.6WMn4QnO08r3
+1498143319480	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143319489	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54072
+Error: no display specified
+1498143335083	geckodriver	INFO	Listening on 127.0.0.1:39354
+1498143336082	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.vSeJaII4DrUo
+1498143336083	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143336093	geckodriver::marionette	INFO	Connecting to Marionette on localhost:38502
+Error: no display specified
+1498143387332	geckodriver	INFO	Listening on 127.0.0.1:45044
+1498143388333	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.rrgGgyKhp0z6
+1498143388335	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143388344	geckodriver::marionette	INFO	Connecting to Marionette on localhost:46483
+Error: no display specified
+1498143443780	geckodriver	INFO	Listening on 127.0.0.1:41948
+1498143444781	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.p3YsrYG7NAi1
+1498143444783	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143444795	geckodriver::marionette	INFO	Connecting to Marionette on localhost:49259
+Error: no display specified
+1498143580248	geckodriver	INFO	Listening on 127.0.0.1:50710
+1498143581248	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.rRWwt7EoynVw
+1498143581249	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143581259	geckodriver::marionette	INFO	Connecting to Marionette on localhost:33963
+Error: no display specified
+1498143644892	geckodriver	INFO	Listening on 127.0.0.1:33821
+1498143645891	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.cGMS2MNNRgU6
+1498143645893	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143645905	geckodriver::marionette	INFO	Connecting to Marionette on localhost:48805
+Error: no display specified
+1498143717710	geckodriver	INFO	Listening on 127.0.0.1:52871
+1498143718711	mozprofile::profile	INFO	Using profile path /tmp/rust_mozprofile.JSSi62ptyNCZ
+1498143718713	geckodriver::marionette	INFO	Starting browser /usr/bin/firefox
+1498143718735	geckodriver::marionette	INFO	Connecting to Marionette on localhost:40058
+Error: no display specified

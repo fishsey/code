@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fishsey.bookRecys.dao.mybatis.impl.NewsDao">
+
+
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="newsId">
+        INSERT INTO news(url,title, text, time, source)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.url}, #{item.title}, #{item.text}, #{item.time}, #{item.source})
+        </foreach>
+    </insert>
+
+    <select id="selectList" resultType="com.fishsey.bookRecys.entity.mybatis.NewsEntity">
+        SELECT *
+        FROM news
+        WHERE newsId BETWEEN #{arg0} and #{arg1};
+    </select>
+
+    <select id="select" resultType="com.fishsey.bookRecys.entity.mybatis.NewsEntity">
+        SELECT *
+        FROM news
+        WHERE newsId = #{id};
+    </select>
+
+
+</mapper>
+

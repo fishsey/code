@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping >
+    <class name="_temp._hibernate.entity.Author" table="author" schema="hibernate">
+
+        <id name="id" type="int">
+            <column name="id" sql-type="int"/>
+            <generator class="increment"></generator>
+        </id>
+        <property name="name" type="java.lang.String">
+            <column name="name" sql-type="tinytext"/>
+        </property>
+
+        <many-to-one name="page" class="_temp._hibernate.entity.Page" column="bookidFK" cascade="all"></many-to-one>
+
+        <!--<set name="pages">-->
+            <!--<key column="AuthorIdFK"></key>-->
+            <!--<one-to-many class="_temp._hibernate.entity.NewsEntity"></one-to-many>-->
+        <!--</set>-->
+
+
+    </class>
+
+</hibernate-mapping>

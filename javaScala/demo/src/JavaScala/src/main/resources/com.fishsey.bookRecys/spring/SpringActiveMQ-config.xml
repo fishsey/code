@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd     
+        http://www.springframework.org/schema/context     
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+        http://www.springframework.org/schema/jms  
+        http://www.springframework.org/schema/jms/spring-jms-4.0.xsd  
+        http://activemq.apache.org/schema/core  
+        http://activemq.apache.org/schema/core/activemq-core-5.8.0.xsd">
+
+    <!-- 扫描注解包 -->
+    <context:annotation-config />
+    <context:component-scan base-package="com.fishsey.bookRecys.crawler"></context:component-scan>
+
+
+	<!-- 真正可以产生Connection的 ConnectionFactory，由对应的 JMS服务厂商提供 -->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://10.65.1.62:61616" />
+    </bean>
+	<!-- 通过往 PooledConnectionFactory注入一个ActiveMQConnectionFactory可以用来将Connection，
+	Session和MessageProducer池化这样可以大大减少我们的资源消耗， -->
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">  
+        <property name="connectionFactory" ref="targetConnectionFactory" />  
+        <property name="maxConnections" value="10" />  
+    </bean>
+    <!--spring connection factory -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">  
+        <property name="targetConnectionFactory" ref="pooledConnectionFactory" />  
+    </bean>  
+
+
+
+    <!-- 定义 JmsTemplate的 Queue类型 -->
+    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <constructor-arg ref="connectionFactory"/>
+        <property name="pubSubDomain" value="false"/>
+    </bean>
+    <!-- 定义 Queue监听器 -->
+    <jms:listener-container destination-type="queue" container-type="default" connection-factory="connectionFactory" acknowledge="auto">
+        <jms:listener destination="wangyi.url.master" ref="urlRecvFromSlave"></jms:listener>
+        <jms:listener destination="wangyi.status.master" ref="statusRecvFromSlave"/>
+    </jms:listener-container>
+
+
+
+    <!-- 定义JmsTemplate的 Topic类型 -->
+    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <constructor-arg ref="connectionFactory"/>
+        <property name="pubSubDomain" value="true"/>
+    </bean>
+    <!-- 定义Topic监听器 -->
+    <!--<jms:listener-container destination-type="topic" container-type="default" connection-factory="connectionFactory" acknowledge="auto">-->
+        <!--<jms:listener destination="" ref=""/>-->
+    <!--</jms:listener-container>-->
+
+</beans>

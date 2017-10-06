@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping >
+    <class name="com.fishsey.bookRecys.entity.hibernate.PageTags" table="pageTags" schema="douban_hibernate">
+
+        <id name="bookid" type="int">
+            <column name="bookid" sql-type="int"/>
+            <generator class="assigned" ></generator>
+        </id>
+
+        <list name="marktags" table="marktags" lazy="false">
+            <key>
+                <column name="bookid" sql-type="int"></column>
+            </key>
+            <list-index column="listOrder"></list-index>
+            <element type="java.lang.String" column="tagName"></element>
+        </list>
+    </class>
+</hibernate-mapping>

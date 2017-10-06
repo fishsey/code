@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="_temp._mybatis.dao.PersonGroupInfoDao">
+
+    <insert id="insertPersnGroup">
+        INSERT INTO persongroupinfo(flag, school)
+        VALUES (#{flag}, #{school});
+    </insert>
+
+    <insert id="insertPersonGroups">
+        INSERT INTO persongroupinfo(flag, school)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.flag}, #{item.school})
+        </foreach>
+    </insert>
+
+</mapper>
+

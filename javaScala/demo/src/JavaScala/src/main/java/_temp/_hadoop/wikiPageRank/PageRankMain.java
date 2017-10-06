@@ -1,0 +1,169 @@
+package _temp._hadoop.wikiPageRank;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class PageRankMain
+{
+    public static class RankMap extends Mapper<LongWritable, Text, IntWritable, Text>
+    {
+        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
+        {
+            ArrayList<Integer> neighbors = null;
+            double out_page_rank = 0;
+            double this_page_current_rank = 0;
+            
+            String[] inArray = value.toString().split("\t");
+            int page_id = Integer.parseInt(inArray[0]);
+            
+            PageRankClass page = new PageRankClass(inArray[1]);
+            context.write(new IntWritable(page_id), new Text(page.toString()));
+            
+            this_page_current_rank = page.getrank();
+            
+            if (page.getneighbors() != null && !page.getneighbors().equals("null") && !page.getneighbors().equals(""))
+            {
+                neighbors = new ArrayList<Integer>(page.getneighbors());
+                out_page_rank = this_page_current_rank / neighbors.size();
+                
+                for (int i = 0; i < neighbors.size(); i++)
+                {
+                    PageRankClass temp_page = new PageRankClass(out_page_rank, null);
+                    context.write(new IntWritable(neighbors.get(i)), new Text(temp_page.toString()));
+                }
+            }
+        }
+    }
+    
+    public static class RankReduce extends Reducer<IntWritable, Text, IntWritable, Text>
+    {
+        public void reduce(IntWritable key, Iterable<Text> values, Context context)
+                throws IOException, InterruptedException
+        {
+            int count = 0;
+            double sum = 0;
+            PageRankClass page = new PageRankClass();
+            Iterator<Text> iter = values.iterator();
+            while (iter.hasNext())
+            {
+                PageRankClass neighbors = new PageRankClass(iter.next().toString());
+                count++;
+                if (neighbors.getneighbors() != null && neighbors.getneighbors().size() != 0)
+                {
+                    page = neighbors;
+                } else
+                {
+                    sum += neighbors.getrank();
+                }
+            }
+            double page_rank = 0.15 / PAGES_NUM + 0.85 * sum;
+            page.set(page_rank);
+            context.write(key, new Text(page.toString()));
+        }
+    }
+    
+    public static void writeFile(String source, Path inputPath, Job job) throws Exception
+    {
+        File fin = new File(source);
+        FileInputStream fis = new FileInputStream(fin);
+        BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+        
+        final FileSystem fs = FileSystem.get(job.getConfiguration());
+        
+        OutputStreamWriter fstream = new OutputStreamWriter(fs.create(inputPath, true));
+        BufferedWriter out = new BufferedWriter(fstream);
+        
+        String aLine = null;
+        while ((aLine = in.readLine()) != null)
+        {
+            String[] alines = aLine.split(":");
+            double rank = ((double) 1 / PAGES_NUM);
+            out.write(alines[0] + "\t" + rank + "," + alines[1]);
+            out.newLine();
+        }
+        in.close();
+        out.close();
+    }
+    
+    
+    static String abPath = "/root/AAA/";
+    static String sourceDir = "dataset/pageRank";
+    static final Path TMP_DIR = new Path(abPath + sourceDir);
+    static private int PAGES_NUM = 5716808;
+    
+    public static void main(String[] args) throws Exception
+    {
+        boolean cont = true; // flag to decide when to abort while loop
+        int ct = 0; // decide if this is the first time run or not, first time run reads from original page file, other run reads from MapReduce output file
+        int numLoop = 0; //the number of iterations
+        int maxIters = 5;
+        
+        FileSystem fs;
+        Job job = null;
+        String source = "/root/AAA/dataset/wiki/wiki";//origin dataset
+        
+        while (cont)
+        {
+            Configuration conf = new Configuration();
+            job = Job.getInstance(conf);
+            job.setJarByClass(PageRankMain.class);
+            if (ct == 0)
+            {
+                Path Mapfile = new Path(TMP_DIR + "/input");
+                FileInputFormat.setInputPaths(job, Mapfile);
+                //init the input dataset for first map
+                writeFile(source, Mapfile, job);
+            } else
+                FileInputFormat.setInputPaths(job, new Path(TMP_DIR + "/output/o" + ct));
+            
+            if (ct > 1)
+            {
+                fs = FileSystem.get(job.getConfiguration());
+                fs.delete(new Path(TMP_DIR + "/output/o" + (ct - 1)), true);
+            }
+            FileOutputFormat.setOutputPath(job, new Path(TMP_DIR + "/output/o" + (ct + 1)));
+    
+            job.setInputFormatClass(TextInputFormat.class);
+            job.setOutputFormatClass(TextOutputFormat.class);
+    
+            job.setMapperClass(RankMap.class);
+            job.setReducerClass(RankReduce.class);
+    
+            job.setMapOutputKeyClass(IntWritable.class);
+            job.setMapOutputValueClass(Text.class);
+            
+            job.setOutputKeyClass(IntWritable.class);
+            job.setOutputValueClass(Text.class);
+            
+            job.setNumReduceTasks(4);
+            
+            job.waitForCompletion(true);
+            if (numLoop >= maxIters)
+            {
+                cont = false;
+                if (ct > 1)
+                {
+                    fs = FileSystem.get(job.getConfiguration());
+                    fs.delete(new Path(TMP_DIR + "/output/o" + (ct)), true);
+                }
+            }
+            ct++;
+            numLoop++;
+        }
+    }
+}

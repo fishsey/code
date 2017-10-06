@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="_temp._hibernate.entity.Page" table="page" schema="hibernate">
+
+        <id name="bookid" type="int">
+            <column name="bookid" sql-type="int"/>
+            <generator class="assigned"></generator>
+        </id>
+
+        <property name="url" type="java.lang.String">
+            <column name="url" sql-type="tinytext"/>
+        </property>
+        <property name="title" type="java.lang.String">
+            <column name="title" sql-type="tinytext"/>
+        </property>
+
+
+        <!--<many-to-one name="author" class="_temp._hibernate.entity.Author" column="AuthorIdFK" ></many-to-one>-->
+
+        <set name="authors">
+            <key column="bookidFK"></key>
+            <one-to-many class="_temp._hibernate.entity.Author"></one-to-many>
+        </set>
+
+    </class>
+</hibernate-mapping>

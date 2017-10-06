@@ -1,0 +1,29 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!--<bean id="c1" class="_temp._spring._injection._setterInjection.impl.Chinese" name="c1-1, c1-2, c1-3" >-->
+        <!--<property name="axe" ref="sAxe"></property>-->
+    <!--</bean>-->
+
+
+    <!--<bean id="c2" class="_temp._spring._injection._setterInjection.impl.Chinese">-->
+        <!--<property name="axe" ref="sAxe"></property>-->
+        <!--<property name="chinese" ref="c1"></property>-->
+    <!--</bean>-->
+
+    <!--<bean id="sAxe" class="_temp._spring._injection._setterInjection.impl.SteelAxe"></bean>-->
+
+    <!--<bean id="c3" class="_temp._spring._injection._setterInjection.impl.ChineseFactoryBean"></bean>-->
+
+
+
+</beans>
